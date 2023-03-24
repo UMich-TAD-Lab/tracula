@@ -1,0 +1,72 @@
+#!/bin/bash
+
+#### Development script to test four subjects and calibrate cpu/memory,
+####   and time.  -- bennet
+
+####  Preamble
+
+#SBATCH --job-name=freesurfer_test
+#SBATCH --mail-type=NONE
+
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=6g
+#SBATCH --time=8:00:00
+#SBATCH --array=1-4
+#SBATCH --output=/nfs/turbo/lsa-csmonk/bbox/FF_Data/Working_Files/TRACULA/job_logs/recon-all-%j.log
+
+#SBATCH --account=csmonk0
+#SBATCH --partition=standard
+
+####  No commands before this line, only comments, #SBATCH, or blank lines
+
+#---------------------------------------------
+# load all and only modules needed for this job
+
+module purge
+module load freesurfer ANTs
+
+#---------------------------------------------
+# print job information
+
+my_job_header
+
+#---------------------------------------------
+# job commands
+
+####  Set variables for use in the session
+
+# The top directory for this project
+export topDir=/nfs/turbo/lsa-csmonk/bbox/FF_Data/Working_Files/TRACULA
+
+# Subject directory for the FreeSurfer generated data and log files
+export SUBJECTS_DIR=${topDir}/freesurfer
+
+# Where the DTI input files are
+DTI_input=$topDir/raw/DTI
+
+# Where the SAND T1 images are kept
+sandDir=/nfs/turbo/lsa-csmonk/SAND
+
+# File with the list of subjects
+export subList=$topDir/etc/recon-all-four-subjects.txt
+
+# Use the array task ID to get the subject for this arrayID
+sub=$(head -n ${SLURM_ARRAY_TASK_ID} ${subList} | tail -n 1)
+
+# Construct the path to the T1 file to use
+# Note:  ses-1 means SAND15 (csm14 on raw data)
+T1_input=${sandDir}/mri/bids/sub-${sub}/ses-1/anat/sub-${sub}_ses-1_T1w.nii.gz
+
+# Check to see if the T1 file exists and isn't empty
+if [ -s $T1_input ] ; then
+    echo "Processing $sub"
+    recon-all -subjid sub-$sub \
+        -i $T1_input \
+        -all
+else
+    echo "Could not find input:  $T1_input"
+    echo "Exiting"
+    exit
+fi
