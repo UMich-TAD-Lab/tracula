@@ -1,0 +1,23 @@
+
+Job summary for JobID 49668570 on the greatlakes cluster for bennet
+Job name: freesurfer_test
+--------------------------------------------------------------------------
+Job submit time:     03/23/2023 15:38:20
+Job start time:      03/23/2023 15:38:21
+Job end time:        03/23/2023 21:29:13
+Job running time:    05:50:52
+
+State:               COMPLETED
+Exit code:           0
+
+On nodes:            gl3076
+                     (1 nodes with 4 cores per node)
+
+CPU Utilized:        05:48:33
+CPU Efficiency:      24.83% of 23:23:28 total CPU time (cores * walltime)
+
+Memory Utilized:     2.00 GB
+Memory Efficiency:   8.35% of 24.00 GB
+Cost:                $0.35
+--------------------------------------------------------------------------
+
