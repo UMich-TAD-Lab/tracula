@@ -5,7 +5,7 @@
 
 ####  Preamble
 
-#SBATCH --job-name=freesurfer_test
+#SBATCH --job-name=fs_batch5
 #SBATCH --mail-type=NONE
 
 #SBATCH --nodes=1
@@ -13,8 +13,8 @@
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=6g
 #SBATCH --time=8:00:00
-#SBATCH --array=1-4
-#SBATCH --output=/nfs/turbo/lsa-csmonk/bbox/FF_Data/Working_Files/TRACULA/job_logs/recon-all-%j.log
+#SBATCH --array=1-43
+#SBATCH --output=/nfs/turbo/lsa-csmonk/bbox/FF_Data/Working_Files/TRACULA/job_logs/recon-all-%x-%j.log
 
 #SBATCH --account=csmonk0
 #SBATCH --partition=standard
@@ -40,6 +40,13 @@ my_job_header
 # The top directory for this project
 export topDir=/nfs/turbo/lsa-csmonk/bbox/FF_Data/Working_Files/TRACULA
 
+# File with the list of subjects
+export subList=$topDir/etc/recon-all-batch5.txt
+if [ ! -s $subList ] ; then
+    echo "$subList does not exist.  Exiting"
+    exit 9
+fi
+
 # Subject directory for the FreeSurfer generated data and log files
 export SUBJECTS_DIR=${topDir}/freesurfer
 
@@ -49,11 +56,9 @@ DTI_input=$topDir/raw/DTI
 # Where the SAND T1 images are kept
 sandDir=/nfs/turbo/lsa-csmonk/SAND
 
-# File with the list of subjects
-export subList=$topDir/etc/recon-all-four-subjects.txt
-
 # Use the array task ID to get the subject for this arrayID
 sub=$(head -n ${SLURM_ARRAY_TASK_ID} ${subList} | tail -n 1)
+echo "Found subject $sub in ${subList}"
 
 # Construct the path to the T1 file to use
 # Note:  ses-1 means SAND15 (csm14 on raw data)
@@ -70,3 +75,4 @@ else
     echo "Exiting"
     exit
 fi
+

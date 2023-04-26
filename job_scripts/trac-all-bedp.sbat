@@ -1,20 +1,15 @@
 #!/bin/bash
 
-#### Development script to test four subjects and calibrate cpu/memory,
-####   and time.  -- bennet
-
-####  Preamble
-
-#SBATCH --job-name=freesurfer_test
+#SBATCH --job-name=trac_all_prep
 #SBATCH --mail-type=NONE
 
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=2
+#SBATCH --cpus-per-task=1
 #SBATCH --mem=6g
-#SBATCH --time=8:00:00
-#SBATCH --array=1-4
-#SBATCH --output=/nfs/turbo/lsa-csmonk/bbox/FF_Data/Working_Files/TRACULA/job_logs/recon-all-%j.log
+#SBATCH --time=30:00:00
+#SBATCH --array=1-3
+#SBATCH --output=/nfs/turbo/lsa-csmonk/bbox/FF_Data/Working_Files/TRACULA/job_logs/trac-all-bedp-%j.log
 
 #SBATCH --account=csmonk0
 #SBATCH --partition=standard
@@ -25,7 +20,8 @@
 # load all and only modules needed for this job
 
 module purge
-module load freesurfer ANTs
+module load use.own
+module load fsl/6.0.5.2 freesurfer/7.2.0 ANTs cuda/9.1.85
 
 #---------------------------------------------
 # print job information
@@ -40,33 +36,31 @@ my_job_header
 # The top directory for this project
 export topDir=/nfs/turbo/lsa-csmonk/bbox/FF_Data/Working_Files/TRACULA
 
+# File with the list of subjects
+export subList=$topDir/etc/trac-all-batch.txt
+if [ ! -s $subList ] ; then
+    echo "$subList does not exist.  Exiting"
+    exit 9
+fi
+
 # Subject directory for the FreeSurfer generated data and log files
 export SUBJECTS_DIR=${topDir}/freesurfer
 
 # Where the DTI input files are
 DTI_input=$topDir/raw/DTI
 
-# Where the SAND T1 images are kept
-sandDir=/nfs/turbo/lsa-csmonk/SAND
-
-# File with the list of subjects
-export subList=$topDir/etc/recon-all-four-subjects.txt
-
 # Use the array task ID to get the subject for this arrayID
 sub=$(head -n ${SLURM_ARRAY_TASK_ID} ${subList} | tail -n 1)
 
-# Construct the path to the T1 file to use
-# Note:  ses-1 means SAND15 (csm14 on raw data)
-T1_input=${sandDir}/mri/bids/sub-${sub}/ses-1/anat/sub-${sub}_ses-1_T1w.nii.gz
+# $sub must be exported for later use
+export sub
 
-# Check to see if the T1 file exists and isn't empty
-if [ -s $T1_input ] ; then
-    echo "Processing $sub"
-    recon-all -subjid sub-$sub \
-        -i $T1_input \
-        -all
-else
-    echo "Could not find input:  $T1_input"
-    echo "Exiting"
-    exit
-fi
+echo "Found subject $sub in ${subList}"
+
+cd $topDir
+
+echo -e "\n#---- Running trac-all -bedp from $PWD ----#\n"
+
+trac-all -bedp -c $SUBJECTS_DIR/sub-${sub}/trac-config
+
+
