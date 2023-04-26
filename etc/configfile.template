@@ -1,0 +1,11 @@
+setenv topDir /nfs/turbo/lsa-csmonk/bbox/FF_Data/Working_Files/TRACULA
+setenv SUBJECTS_DIR /nfs/turbo/lsa-csmonk/bbox/FF_Data/Working_Files/TRACULA/freesurfer
+set dtroot = output
+set subjlist = ( sub-$sub )
+set dcmroot = raw/DTI/sub-$sub
+set dcmlist = ( sub-${sub}_ses-1_run-1_dwi.nii.gz )
+set bvecfile = bvec.txt
+set bvalfile = bval.txt
+set dob0 = 0
+set doeddy = 1
+set pathlist = ( lh.uf rh.uf )

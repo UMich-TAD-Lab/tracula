@@ -1,37 +1,27 @@
-# The directory under which most other directories fall
-export topDir=/nfs/turbo/lsa-csmonk/bbox/FF_Data/Working_Files/TRACULA
-
+setenv topDir /nfs/turbo/lsa-csmonk/bbox/FF_Data/Working_Files/TRACULA
 
 # FreeSurfer SUBJECTS_DIR
 # T1 images and FreeSurfer segmentations are expected to be found here
 #
 # setenv SUBJECTS_DIR /Volumes/lsa-csmonk/SAND/mri/freesurfer/ses-1
-export SUBJECTS_DIR=$topDir/freesurfer
-
+setenv SUBJECTS_DIR $topDir/freesurfer
 
 # Output directory where trac-all results will be saved
 # Default: Same as SUBJECTS_DIR
 #
-# set dtroot = /Volumes/lsa-csmonk/bbox/FF_Data/Working_Files/TRACULA/0001-test/output
-
-export dtroot=$topDir/output
-
+set dtroot = output
 
 # Subject IDs
 #
-# set subjlist = ( sub-10001 )
-export subjlist=sub-10001
+set subjlist = ( sub-10001 )
 
 # Input diffusion DICOMs
 # If original DICOMs don't exist, these can be in other image format
 # but then the gradient table and b-value table must be specified (see below)
 
-# set dcmroot = /Volumes/lsa-csmonk/bbox/FF_Data/Working_Files/TRACULA/0001-test
-export dcmroot=/nfs/turbo/lsa-csmonk/bbox/FF_Data/Working_Files/TRACULA/raw/DTI
+set dcmroot = raw/DTI/sub-10001
 
-# set dcmlist = ( 0001.nii )
-
-dcmlist=sub-10001_ses-1_run-1_dwi.nii.gz
+set dcmlist = ( sub-10001_ses-1_run-1_dwi.nii.gz )
 
 # Diffusion gradient tables (if there is a different one for each scan)
 # Must be specified if they cannot be read from the DICOM headers
@@ -44,9 +34,7 @@ dcmlist=sub-10001_ses-1_run-1_dwi.nii.gz
 #                 $TUTORIAL_DATA/diffusion_tutorial/elmo.2008/orig/gradients.txt \
 #                 $TUTORIAL_DATA/diffusion_tutorial/elmo.2012/orig/gradients.txt )
 
-# set bvecfile = 0001.bvec.txt
-# export bvecfile=0001.bvec.txt
-export bvecfile=/nfs/turbo/lsa-csmonk/bbox/FF_Data/Working_Files/TRACULA/etc/bvec
+set bvecfile = sub-10001-bvec.txt
 
 # Diffusion b-value tables (if there is a different one for each scan)
 # Must be specified if they cannot be read from the DICOM headers
@@ -57,15 +45,12 @@ export bvecfile=/nfs/turbo/lsa-csmonk/bbox/FF_Data/Working_Files/TRACULA/etc/bve
 #                 $TUTORIAL_DATA/diffusion_tutorial/elmo.2008/orig/bvalues.txt \
 #                 $TUTORIAL_DATA/diffusion_tutorial/elmo.2012/orig/bvalues.txt )
 
-# set bvalfile = 0001.bval.row.txt
-export bvalfile=/nfs/turbo/lsa-csmonk/bbox/FF_Data/Working_Files/TRACULA/etc/bval
-# export bvalfile=0001.bval.row.txt
+set bvalfile = sub-10001-bval.txt
 
-# set dob0 = 0
-# set doeddy = 1
-# set pathlist = ( lh.uf rh.uf )
+set dob0 = 0
 
-export dob0=0
-export doeddy=1
-export pathlist="lh.uf rh.uf"
+set doeddy = 1
+
+set pathlist = ( lh.uf rh.uf )
+
 
